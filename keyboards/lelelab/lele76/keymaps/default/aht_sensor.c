@@ -48,5 +48,12 @@ bool read_aht21(sensor_data_t *dout) {
     f = f*200 - 50;
     dout->t_int = (int)f;
     dout->t_dec = (int)((f - (int)f) * 10);
+
+    //Convert to Fahrenheit
+    float f_convert = (f*(9/5))+32;
+
+    dout->t_f_int = (int)(f_convert);
+    dout->t_f_dec = (int)((f_convert - (int)f_convert) * 10);
+
     return true;
 }
