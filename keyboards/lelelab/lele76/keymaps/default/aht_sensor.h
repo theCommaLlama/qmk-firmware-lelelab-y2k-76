@@ -6,6 +6,8 @@ typedef struct {
     uint8_t h_dec;
     uint8_t t_int;
     uint8_t t_dec;
+    uint8_t t_f_int;
+    uint8_t t_f_dec;
 } sensor_data_t;
 
 bool trig_aht21(void);

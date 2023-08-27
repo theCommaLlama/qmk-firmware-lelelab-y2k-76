@@ -53,7 +53,7 @@ void (*f_draw)(void);
 
 static uint8_t app_autoback_sec;
 
-static uint32_t user_lastact32; // in ms 
+static uint32_t user_lastact32; // in ms
 static uint8_t is_rgb_idle_off;
 static uint8_t is_side_idle_off;
 
@@ -84,7 +84,7 @@ struct {
 static uint16_t rot_enable_fast = 0; // value as max rot value
 
 // default callback functions
-static bool empty_on_rotate(bool moveDown) { 
+static bool empty_on_rotate(bool moveDown) {
     return true;
 }
 
@@ -406,7 +406,7 @@ static void rgb_bright_draw(void) {
 static bool rgb_bright_rot(bool moveDown) {
     if (moveDown) eecfg.rgb.bright++;
     else if (!moveDown && eecfg.rgb.bright>0) eecfg.rgb.bright--;
-    
+
     if (eecfg.rgb.bright > MAX_RGB_BRIGHT) {
         eecfg.rgb.bright = MAX_RGB_BRIGHT;
     }
@@ -617,8 +617,8 @@ static void draw_space_travel(void) {
 
         y += star->dis_y;
         x += star->dis_x;
-        
-        if (star->dis_x > 16 || star->dis_x < -16 
+
+        if (star->dis_x > 16 || star->dis_x < -16
         || star->dis_y > 10 || star->dis_y < -10) {
             draw5PxStar(x, y, isDrawNotErase); // 5 pixel star
         }
@@ -701,7 +701,7 @@ static void draw_bongo_img(uint8_t img) {
         bongo_cat_status = 0;
         if (img == 0) return;
     }
-    
+
     uint16_t bongo_addr = I2C_ROM_ADDR_bongo_both;
     uint8_t r = 1, c = 14;
     if (img == 1) {
@@ -836,7 +836,7 @@ static void draw_tomato(void) {
                 tomato.timer_end = timer_read32() + (uint32_t)1000*POMODO_REST_MINUTES*60;
                 draw_once_flag = 1;
             }
-            break; 
+            break;
 
         case ST_RestTimer:
             if (tomato.timer_end <= timer_read32()) {
@@ -865,7 +865,7 @@ static bool tomato_on_rot(bool moveDown)  {
         default:
             return true;;
     }
-    
+
 }
 
 static bool tomato_keydown(uint16_t keycode, keyrecord_t *record) {
@@ -896,7 +896,7 @@ static void draw_rot_cube(void) {
     if (draw_once_flag) {
         l_rotateX = 50;
         l_rotateY = 18;
-        l_rotateZ = 77;	
+        l_rotateZ = 77;
         return;
     }
     l_rotateX += 4;
@@ -946,7 +946,7 @@ static void _load_menu(const char* const *list, uint8_t cursor, uint8_t length) 
 
 static void _draw_menu(void) {
     int row, item_i;
-    
+
     row = 0;
     while (row < SCREEN_LINES && row < menuS.length ) {
         item_i = row + menuS.offset;
@@ -1114,13 +1114,25 @@ static void dashboard_draw(void) {
     }
     else if (_shared_u16 == 100) {
         if (is_oled_on()) { // not wake up oled if already off.
-        oled_set_cursor(0,6); 
-        sprintf(str_buf, "%d.%d",sensor_data.t_int, sensor_data.t_dec);
-        oled_write(str_buf,0);
-        oled_write_char(0,0); // degree symbol
+            bool enable_freedom_units = true;
+            oled_set_cursor(0,6);
 
-        sprintf(str_buf, "C %d%% ",sensor_data.h_int);
-        oled_write(str_buf,0);
+            if(enable_freedom_units) {
+                sprintf(str_buf, "%d.%d",sensor_data.t_f_int, sensor_data.t_f_dec);
+                oled_write(str_buf,0);
+                oled_write_char(0,0); // degree symbol
+
+                sprintf(str_buf, "F %d%% ",sensor_data.h_int);
+            }
+            else {
+                sprintf(str_buf, "%d.%d",sensor_data.t_int, sensor_data.t_dec);
+                oled_write(str_buf,0);
+                oled_write_char(0,0); // degree symbol
+
+                sprintf(str_buf, "C %d%% ",sensor_data.h_int);
+            }
+
+            oled_write(str_buf,0);
         }
     }
     else if (_shared_u16 >= 1100) {
@@ -1130,7 +1142,7 @@ static void dashboard_draw(void) {
     if (draw_once_flag) {
         oled_set_cursor(0,7); oled_write("Lele76 v3.9",0);
         if (eecfg.homeart_id == HOMEART_PIG  || eecfg.homeart_id == HOMEART_PIG_SPACE) {
-            oled_set_cursor(80,2); 
+            oled_set_cursor(80,2);
             oled_write_compressed_from_I2C_rom(I2C_ROM_ADDR_LelePig);
         }
     }
@@ -1141,7 +1153,7 @@ static void dashboard_draw(void) {
     else {
         tinyrgb_task();
     }
-    
+
 
     // homeart part
     switch (eecfg.homeart_id) {
@@ -1352,10 +1364,10 @@ bool app_on_key(uint16_t keycode, keyrecord_t *record) {
         else
             return true;
     }
-    
+
     // is normal key press
     if (record->event.pressed) {
-        _key_led_i = getLedIdFromKey(    
+        _key_led_i = getLedIdFromKey(
             record->event.key.row,
             record->event.key.col
         );
@@ -1427,7 +1439,7 @@ static uint8_t getLedIdFromKey(uint8_t row, uint8_t col) {
 
 bool app_eeconfig_load(void) {
     // check magicbyte
-    if (eeprom_read_byte((uint8_t*) APP_EECONFIG_ADDR_MAGICBYTE) 
+    if (eeprom_read_byte((uint8_t*) APP_EECONFIG_ADDR_MAGICBYTE)
         != APP_EECONFIG_MAGICBYTE)
         return false;
 
